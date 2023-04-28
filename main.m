@@ -1,0 +1,56 @@
+close all; clear; clc;
+
+addpath('include');
+%% Set parameters
+para.r = 0.3; % Wheel radius
+para.L = 1.2; % Wheelbase
+
+%% Define time 
+% Time step
+dt = 0.01; 
+% Time vector
+t = 0:dt:100; 
+para.t = t;
+
+%% Input left and right wheel speeds
+wL_rpm = 10; % Left wheel speed (rev/min)
+wR_rpm = 20; % Right wheel speed (rev/min)
+para.wL = 2*pi*wL_rpm/60;
+para.wR = 2*pi*wR_rpm/60;
+
+%% Calculate wheel linear velocities
+vL = para.wL * para.r;
+vR = para.wR * para.r;
+
+%% Calculate vehicle angular and linear velocities
+w = (vR - vL) / 2*para.L;
+v = (vR + vL) / 2;
+
+%% Reference Command
+f = 1;
+A1 = 10; A2 = 8;
+para.x_ref = A1*sin(2*pi*f*t).*cos(2*pi*2*f*t);
+para.y_ref = A2*cos(2*pi*f*t);
+para.v_ref = v;
+para.w_ref = w;
+
+%% Control Gain
+para.k1 = 50;
+para.k2 = 300;
+para.k3 = 10;
+
+%% Initial Condition
+% x0 = [para.x_ref(1) para.y_ref(1) atan2(para.y_ref(1), para.x_ref(1)) 0 0 0]';
+x0 = [0 0 atan2(0, 0) para.x_ref(1) para.y_ref(1) atan2(para.y_ref(1), para.x_ref(1))]';
+%%
+%State
+% State = Fun_Runge_Kutta(@Fun_Kinematic, t, [0,0,0]', para);
+State = Fun_Runge_Kutta(@Fun_Control, t, x0, para);  
+% Plot vehicle trajectory
+
+plot(State(1, :), State(2, :),'LineWidth',1.5);
+axis equal;
+grid on;
+hold on;
+xlabel('X position');
+ylabel('Y position');
