@@ -37,6 +37,6 @@ sys(2, :) = sin(theta)*u1;
 sys(3, :) = u2;
 sys(4, :) = -u1 + e2*u2 + v_ref*cos(e3);
 sys(5, :) = -e1*u2 + v_ref*sin(e3);
-sys(6, :) = -u2 + w_ref;
+sys(6, :) = w_ref - u2;
 
 end

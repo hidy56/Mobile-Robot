@@ -40,13 +40,12 @@ para.k2 = 300;
 para.k3 = 10;
 
 %% Initial Condition
+% x0 = [para.x_ref(1) para.y_ref(1) atan2(para.y_ref(1), para.x_ref(1)) 0 0 0]';
 x0 = [0 0 atan2(0, 0) para.x_ref(1) para.y_ref(1) atan2(para.y_ref(1), para.x_ref(1))]';
-
 %%
-
+%State
 % State = Fun_Runge_Kutta(@Fun_Kinematic, t, [0,0,0]', para);
 State = Fun_Runge_Kutta(@Fun_Control, t, x0, para);  
 
-%% Save the data
 save('data/ControlFigure.mat','State','t', 'para');
 
